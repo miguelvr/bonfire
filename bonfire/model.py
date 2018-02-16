@@ -61,10 +61,6 @@ class ModelTemplate(nn.Module):
     def predict(self, input):
         pass
 
-    @abstractmethod
-    def get_features(self):
-        pass
-
     def load(self, path):
         logging.info("Loading Model Weights on {}".format(path))
         self.load_state_dict(
