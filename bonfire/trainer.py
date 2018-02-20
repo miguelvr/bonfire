@@ -30,10 +30,10 @@ class Trainer(object):
             predictions = []
             gold = []
             for batch in dev_data:
-                predictions.append(self.model.predict(batch['input']))
-                gold.append(batch['output'])
+                predictions.extend(self.model.predict(batch['input']))
+                gold.extend(batch['output'])
 
-            self.logger.update_on_epoch(predictions, gold)
+            self.logger.update_on_epoch(gold, predictions)
 
             if self.logger.state == 'save':
                 self.model.save()
@@ -41,6 +41,6 @@ class Trainer(object):
     def test(self, test_data):
         predictions = []
         for batch in test_data:
-            predictions.append(self.model.predict(batch['input']))
+            predictions.extend(self.model.predict(batch['input']))
 
         return predictions
