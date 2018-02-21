@@ -33,9 +33,9 @@ class BasicLogger(LoggerTemplate):
         self.state = None
         self.epoch += 1
         epoch_loss = np.mean(self.loss)
-        log = "Epoch: {} | Loss: {}".format(self.epoch, epoch_loss)
+        log = "Epoch: {} | Loss: {:.3f}".format(self.epoch, epoch_loss)
         self.loss = []
         if self.metric is not None:
             score = self.metric(gold, predictions)
-            log += " | Score: {}".format(score)
+            log += " | Score: {:.3f}".format(score)
         print(log)
