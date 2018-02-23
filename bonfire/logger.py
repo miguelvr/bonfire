@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from abc import ABCMeta, abstractmethod
 
@@ -20,11 +21,18 @@ class LoggerTemplate(object):
 
 class BasicLogger(LoggerTemplate):
 
-    def __init__(self, metric=None):
+    def __init__(self, metric=None, score_optimization='min'):
         super(BasicLogger, self).__init__()
         self.loss = []
         self.epoch = 0
         self.metric = metric
+        self.score_optimization = score_optimization
+        if self.score_optimization == 'min':
+            self.best_score = np.inf
+        elif self.score_optimization == 'max':
+            self.best_score = -np.inf
+        else:
+            raise ValueError("score_optimization must be either 'min' or 'max'")
 
     def update_on_batch(self, objective):
         self.loss.append(objective)
@@ -38,4 +46,15 @@ class BasicLogger(LoggerTemplate):
         if self.metric is not None:
             score = self.metric(gold, predictions)
             log += " | Score: {:.3f}".format(score)
+
+            if self.score_optimization == 'min':
+                improved = score < self.best_score
+            else:
+                improved = score > self.best_score
+
+            if improved:
+                self.best_score = score
+                self.state = 'save'
+        else:
+            self.state = 'save'
         print(log)
